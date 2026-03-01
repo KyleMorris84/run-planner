@@ -13,7 +13,7 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit, useAu
     if (!useAuthentication) {
 
         var response = await fetch(
-            `/api/${endpoint}`,
+            `${import.meta.env.VITE_USER_MANAGEMENT_API_URL_BASE}/${endpoint}`,
             {
                 ...options,
                 headers: headers
@@ -51,7 +51,7 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit, useAu
 
     if (accessToken?.exp && new Date(accessToken.exp) < new Date()) {
         console.log("refreshing access token...");
-        var refreshResponse = await fetch('/api/refresh', {
+        var refreshResponse = await fetch(`${import.meta.env.VITE_USER_MANAGEMENT_API_URL_BASE}/refresh`, {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit, useAu
     }
 
     var response = await fetch(
-        `/api/${endpoint}`,
+        `${import.meta.env.VITE_USER_MANAGEMENT_API_URL_BASE}/${endpoint}`,
         {
             ...options,
             headers: headers

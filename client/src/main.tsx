@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
@@ -24,11 +23,9 @@ const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
-    <StrictMode>
-      <StyledEngineProvider enableCssLayer>
-        <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
-        <RouterProvider router={router} />
-      </StyledEngineProvider>
-    </StrictMode>,
+    <StyledEngineProvider enableCssLayer>
+      <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
+      <RouterProvider router={router} />
+    </StyledEngineProvider>
   )
 }

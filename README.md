@@ -1,39 +1,16 @@
-# Login Page + User Management API
+# Run Planner
 
-This repo includes a log in page front end, along with a user management api.
+This is a simple webapp that allows users to draw a path along a map and view the elavation change along that path. Map is restricted to the UK and Ireland. This ranges specifically from latitudes 50 to 60 and longitudes -10 to 5.
 
-The front end is a react app, built with vite, using tanstack router.
+# Setup
 
-The api is a .net 10 webapp that connects to a postgres database that is ran separately in a container.
+## Docker
 
-The api uses asp.net core identity and entity framework to manage the db.
+To run the postgres users db, run `docker compose up -d` in the root directory. This will expose the db on port 5432 and open-elevation on port 80.
 
-## Features
+To run the user management API, run the Api project inside `LogInPage.sln` in the `LogInPage` directory. The api runs on port 7204.
 
-The user can: 
-- Log in
-- Sign up
-- View their profile
-- Log out
+## Client
 
-The back end is fully authenticated using jwt access tokens & refresh tokens. This means:
+To run the client web app you will need node. Then run `npm install` and `npm run dev`. This will run the frontend on http://localhost:3000/.
 
-- The user cannot call any endpoints except `/login` or `/signup` without an access token.
-- The access token has a 1 minute lifetime, reducing the potential damage of stolen tokens.
-- If the access token is expired, the next time the front end makes a request it will first call `/refresh` to get a new access token. If the refresh token is valid, the front end will then recieve a new access token.
-- At this time, the client will also receive a new refresh token via an http-only cookie. This is to protect against any malicious js in the client stealing the refresh token - called an XSS attack.
-- Refresh tokens have a lifetime of 1 day, at this time the user will be logged out and will need to log in again to receive a new access/refresh token pair.
-
-The point of the refresh tokens is to allow the access tokens to have a short life span without forcing the user to log back in every time they expire.
-
-## Running locally
-
-1. Run the following in the root directory: `docker compose up -d`
-2. Run the LogInPage Api project (https) in Visual Studio / Rider.
-3. Run the following in the `\login-page` directory: `npm run dev`
-
-## Future Improvements
-
-- Use tanstack query for better error / pending handling on the front end
-- Add some better error classes in the backend for more consistent handling on the front end
-- Return jwt as a cookie instead of in the response body
