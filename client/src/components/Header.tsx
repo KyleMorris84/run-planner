@@ -8,7 +8,7 @@ export default function Header() {
       <Link to='/'>
         <div className="flex items-center">
           <Home size={24} />
-          <h1 className="ml-4 text-xl font-semibold pb-1">My App</h1>
+          <h1 className="ml-4 text-xl font-semibold pb-1">Run Planner</h1>
         </div>
       </Link>
       <UserIconButton />

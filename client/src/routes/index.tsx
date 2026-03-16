@@ -36,8 +36,7 @@ function Index() {
         data.result.latitude,
         data.result.longitude
       ]);
-      if (!started) setStarted(prev => true)
-      setPostCode('');
+      if (!started) setStarted(true)
     } else {
       alert("Invalid Post Code. Please try again.")
     }
@@ -46,34 +45,46 @@ function Index() {
 
 
   return (
-    <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-      <Typography variant="h4">Welcome {user ? "back, " + user?.name : "guest"}</Typography>
+    <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+      {!started && <>
+        <Typography variant="h4">
+          {user
+            ? "Welcome back, " + user?.name + "!"
+            : "Welcome guest!"
+          }
+        </Typography>
+        <Typography variant="body1" width="50%" textAlign="center">
+          This is a webapp that allows you to plot a route on a map and see statistics about that route. To get started, enter a post code and click the "Start" button. You can then click on the map to add markers and create your route. The stats will update automatically as you add markers.
+          {!user && <><br /><br /> You are currently not logged in, so your routes will not be saved. To save your routes, please log in or create an account.</>}
+        </Typography>
+      </>}
       <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', gap: 2 }}>
         <TextField variant="outlined" value={postCode} onChange={event => setPostCode(event.target.value)} />
         <Button variant="contained" onClick={() => lookup(postCode)}>{started ? "Lookup" : "Start"}</Button>
       </Box>
-      <Map center={position} markers={markers} setMarkers={setMarkers} />
-      <LineChart
-        xAxis={[{ data: distances, label: "Distance (km)" }]}
-        yAxis={[{ label: "Elevation (m)" }]}
-        series={[{
-          data: markers.map(m => m.elevation),
-          showMark: true,
-        }]}
-        onHighlightedAxisChange={event => {
-          console.log(event);
-          setMarkers(prev => {
-            const newMarkers = prev.map((m, i) => ({
-              ...m,
-              highlight: i === event[0]?.dataIndex
-            }));
-            return newMarkers;
-          });
-        }}
-        height={500}
-        width={800} />
+      {started && <Map center={position} markers={markers} setMarkers={setMarkers} />}
+      {/* {
+        false && <LineChart
+          xAxis={[{ data: distances, label: "Distance (km)" }]}
+          yAxis={[{ label: "Elevation (m)" }]}
+          series={[{
+            data: markers.map(m => m.elevation),
+            showMark: true,
+          }]}
+          onHighlightedAxisChange={event => {
+            console.log(event);
+            setMarkers(prev => {
+              const newMarkers = prev.map((m, i) => ({
+                ...m,
+                highlight: i === event[0]?.dataIndex
+              }));
+              return newMarkers;
+            });
+          }}
+          height={500}
+          width={800} />
+      } */}
 
-
-    </Box>
+    </Box >
   )
 }
