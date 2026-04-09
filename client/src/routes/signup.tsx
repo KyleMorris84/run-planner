@@ -29,7 +29,8 @@ function RouteComponent() {
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
     try {
-      var response = await apiFetch('register', { method: 'POST', body: JSON.stringify(data) }, false);
+      await apiFetch('register', { method: 'POST', body: JSON.stringify(data) }, false);
+      setTimeout(() => window.location.replace("/login"), 1000);
     } catch (error: any) {
       setError('root', { message: error.message ?? 'An error occurred during sign up' });
     }

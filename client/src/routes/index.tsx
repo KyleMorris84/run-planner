@@ -54,8 +54,8 @@ function Index() {
           }
         </Typography>
         <Typography variant="body1" width="50%" textAlign="center">
-          This is a webapp that allows you to plot a route on a map and see statistics about that route. To get started, enter a post code and click the "Start" button. You can then click on the map to add markers and create your route. The stats will update automatically as you add markers.
-          {!user && <><br /><br /> You are currently not logged in, so your routes will not be saved. To save your routes, please log in or create an account.</>}
+          Enter a post code and click "Start" to start plotting your route.
+          {!user && <><br /><br /> You are currently not logged in, your routes will not be saved. To save your routes, please log in or create an account.</>}
         </Typography>
       </>}
       <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', gap: 2 }}>
