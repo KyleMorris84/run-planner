@@ -1,19 +1,25 @@
 services:
   log-in-page:
-    build: ./LogInPage
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    working_dir: /src
+    volumes:
+      - ./LogInPage:/src
+    command: dotnet watch run --no-launch-profile
     ports:
       - '7204:7204'
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=postgres;Username=postgres;Password=postgres
-      - Jwt__Issuer=https://localhost:7204
-      - Jwt__Audience=https://localhost:7204
+      - Jwt__Issuer=http://localhost:7204
+      - Jwt__Audience=http://localhost:7204
       - Jwt__ExpirationInMinutes=1
-      - Jwt__SecretKey=Wowza!
+      - Jwt__SecretKey=Wowza!ThisIsALongerSecretKey1234
       - Jwt__ClockSkew=15
       - RefreshToken__ExpirationInDays=1
       - RefreshToken__CleanUpFrequencyInMinutes=60
-      - Cors__AllowedOrigins=http://localhost:3000
+      - Cors__AllowedOrigins__0=http://localhost:3000
+      - ASPNETCORE_URLS=http://+:7204
     depends_on:
       db:
         condition: service_healthy
