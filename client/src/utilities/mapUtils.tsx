@@ -1,5 +1,5 @@
 import { useMap, useMapEvents } from "react-leaflet";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { Coordinate, Marker } from "@/types/Map";
 
 export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -40,6 +40,50 @@ export function calculateDistances(markers: Marker[]): number[] {
     return (distances);
 }
 
+export function calculateElevationGain(markers: Marker[]): number {
+    let gain = 0;
+    for (let i = 1; i < markers.length; i++) {
+        const delta = (markers[i].elevation ?? 0) - (markers[i - 1].elevation ?? 0);
+        if (delta > 0) gain += delta;
+    }
+    return Math.round(gain);
+}
+
+export function calculateElevationLoss(markers: Marker[]): number {
+    let loss = 0;
+    for (let i = 1; i < markers.length; i++) {
+        const delta = (markers[i].elevation ?? 0) - (markers[i - 1].elevation ?? 0);
+        if (delta < 0) loss += Math.abs(delta);
+    }
+    return Math.round(loss);
+}
+
+export function exportToGPX(markers: Marker[], name = "Route"): void {
+    const trackPoints = markers
+        .map(m => `      <trkpt lat="${m.position[0]}" lon="${m.position[1]}">
+        <ele>${m.elevation ?? 0}</ele>
+      </trkpt>`)
+        .join("\n");
+
+    const gpx = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Run Planner" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>${name}</name>
+    <trkseg>
+${trackPoints}
+    </trkseg>
+  </trk>
+</gpx>`;
+
+    const blob = new Blob([gpx], { type: "application/gpx+xml" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${name}.gpx`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 export function ChangeView({ center }: { center: Coordinate }) {
     const map = useMap();
 
@@ -50,29 +94,35 @@ export function ChangeView({ center }: { center: Coordinate }) {
     return null;
 }
 
-export function HandleMapEvents({ setMarkers }: { setMarkers: React.Dispatch<React.SetStateAction<Marker[]>> }) {
+export function HandleMapEvents({ onMarkerAdd, locked, markersRef }: {
+    onMarkerAdd: (marker: Marker) => void;
+    locked: boolean;
+    markersRef: React.RefObject<Marker[]>;
+}) {
+    const lockedRef = useRef(locked);
+    useEffect(() => { lockedRef.current = locked; }, [locked]);
 
     useMapEvents({
         click: async (event) => {
+            if (lockedRef.current) return;
+            let elevation: number;
             try {
-                var elevation = await getElevation(event.latlng.lat, event.latlng.lng);
+                elevation = await getElevation(event.latlng.lat, event.latlng.lng);
             } catch (error) {
                 console.log("Elevation fetch error:", error);
-                elevation = 1;
+                elevation = 0;
             }
-            setMarkers(current => {
-                var nextId = (current.length > 0) ? current[current.length - 1].id + 1 : 1;
-                return [...current, { id: nextId, position: [event.latlng.lat, event.latlng.lng], elevation: elevation }];
-            });
+            const current = markersRef.current ?? [];
+            const nextId = current.length > 0 ? current[current.length - 1].id + 1 : 1;
+            onMarkerAdd({ id: nextId, position: [event.latlng.lat, event.latlng.lng], elevation });
         }
-    })
+    });
 
     return null;
 }
 
 async function getElevation(lat: number, lon: number): Promise<number> {
     try {
-        console.log(`${import.meta.env.VITE_OPEN_ELEVATION_API_URL_BASE}/lookup?locations=${lat},${lon}`);
         const response = await fetch(`${import.meta.env.VITE_OPEN_ELEVATION_API_URL_BASE}/lookup?locations=${lat},${lon}`);
         // const response = await fetch(`https://api.open-elevation.com/api/v1/lookup?locations=${lat},${lon}`);
         const data = await response.json();

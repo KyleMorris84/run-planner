@@ -3,6 +3,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import { GlobalStyles, StyledEngineProvider } from '@mui/material'
 import './styles.css'
+import 'leaflet/dist/leaflet.css'
 
 const router = createRouter({
   routeTree,
