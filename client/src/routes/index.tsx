@@ -45,7 +45,7 @@ function Index() {
 
 
   return (
-    <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+    <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 5, mt: 8 }}>
       {!started && <>
         <Typography variant="h4">
           {user

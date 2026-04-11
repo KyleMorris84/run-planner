@@ -72,12 +72,12 @@ function RouteComponent() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Paper className="flex flex-col items-center justify-center gap-8 p-10 mt-10 bg-gray-50" >
-        <Typography variant="h5">Log In</Typography>
+    <div className="flex flex-col items-center mt-16">
+      <Typography variant="h4">Log In</Typography>
+      <form onSubmit={handleSubmit(onSubmit)}>
+      <Paper className="flex flex-col items-center justify-center gap-8 p-10 mt-10 bg-gray-50 w-[500px]">
         <TextField
           {...register('email')}
-          className="w-80"
           error={!!errors.email}
           helperText={errors.email && errors.email.message}
           variant="outlined"
@@ -97,12 +97,12 @@ function RouteComponent() {
         />
         <TextField
           {...register('password')}
-          className="w-80"
           error={!!errors.password}
           helperText={errors.password && errors.password.message}
           variant="outlined"
           label="Password"
           name="password"
+          fullWidth={true}
           type={viewPassword ? 'text' : 'password'}
           slotProps={{
             input: {
@@ -139,6 +139,7 @@ function RouteComponent() {
           <Typography variant="body2" color="success">Login successful!</Typography>
         )}
       </Paper>
-    </form>
+      </form>
+    </div>
   )
 }

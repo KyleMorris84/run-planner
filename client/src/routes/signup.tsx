@@ -1,7 +1,7 @@
 import { apiFetch } from '@/utilities/apiClient'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, IconButton, InputAdornment, Paper, TextField, Typography } from '@mui/material'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Eye, EyeClosed, Lock, Mail, UserRound } from 'lucide-react'
 import { useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
@@ -37,9 +37,10 @@ function RouteComponent() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Paper className="flex flex-col items-center justify-center gap-8 p-10 mt-10 bg-gray-50 w-95">
-        <Typography variant="h5">Sign Up</Typography>
+    <div className="flex flex-col items-center mt-16">
+      <Typography variant="h4">Sign Up</Typography>
+      <form onSubmit={handleSubmit(onSubmit)}>
+      <Paper className="flex flex-col items-center justify-center gap-8 p-10 mt-10 bg-gray-50 w-[500px]">
         <TextField
           {...register('name')}
           error={!!errors.name}
@@ -86,6 +87,7 @@ function RouteComponent() {
           label="Password"
           name="password"
           type={viewPassword ? 'text' : 'password'}
+          fullWidth={true}
           slotProps={{
             input: {
               startAdornment: (
@@ -108,9 +110,15 @@ function RouteComponent() {
         <Button disabled={isSubmitting} variant="contained" color="primary" fullWidth={true} type="submit">
           {isSubmitting ? "Creating Account..." : "Create Account"}
         </Button>
+        {!errors.root && !isSubmitSuccessful && (
+          <Link to="/login">
+            <Typography variant="body2" color="textSecondary">Already have an account? Log in here.</Typography>
+          </Link>
+        )}
         {errors.root && (<Typography variant="body2" color="error">{errors.root.message}</Typography>)}
         {isSubmitSuccessful && !errors.root && (<Typography variant="body2" color="success">Sign up successful!</Typography>)}
       </Paper>
-    </form>
+      </form>
+    </div>
   )
 }
