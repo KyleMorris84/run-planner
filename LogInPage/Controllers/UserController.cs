@@ -66,8 +66,8 @@ public sealed class UserController(
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null || !await userManager.CheckPasswordAsync(user, request.Password))
         {
-            return NotFound();
-        } 
+            return Unauthorized();
+        }
         var roles = await userManager.GetRolesAsync(user);
 
         var accessToken = tokenProvider.GetAccessToken(user, roles, jwtSettings);
