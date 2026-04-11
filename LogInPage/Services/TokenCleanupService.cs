@@ -1,4 +1,5 @@
 ﻿using Api.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Api.Services;
@@ -15,11 +16,12 @@ public class TokenCleanupService(
             using var scope = scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var expiredTokens = dbContext.RefreshTokens
-                .Where(t => t.Expires < DateTime.UtcNow);
+            var expiredTokens = await dbContext.RefreshTokens
+                .Where(t => t.Expires < DateTime.UtcNow)
+                .ToListAsync(cancellationToken);
 
-            Console.WriteLine("{0} | Removing {1} expired tokens...", DateTime.UtcNow, expiredTokens.Count());
-            
+            Console.WriteLine("{0} | Removing {1} expired tokens...", DateTime.UtcNow, expiredTokens.Count);
+
             dbContext.RefreshTokens.RemoveRange(expiredTokens);
             await dbContext.SaveChangesAsync(cancellationToken);
             
