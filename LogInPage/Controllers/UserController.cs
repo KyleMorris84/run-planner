@@ -14,6 +14,7 @@ using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredCla
 namespace Api.Controllers;
 
 public record RegistrationRequest(string Email, string Password, string Name, bool NotificationsEnabled = true);
+public record RegisterResponse(string Id, string Email, string Name);
 public record LoginRequest(string Email, string Password);
 public record LoginResponse(string Token, DateTime exp);
 public record LogoutRequest(string userId);
@@ -56,8 +57,8 @@ public sealed class UserController(
         }
         
         await transaction.CommitAsync();
-        
-        return Ok(newUser);
+
+        return Ok(new RegisterResponse(newUser.Id, newUser.Email!, newUser.Name));
     }
 
     [HttpPost("login")]
