@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Text.Json;
 using Api.Model;
 using Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -154,7 +153,6 @@ public sealed class UserController(
         }
 
         await refreshTokenQueryResult.ExecuteDeleteAsync();
-        await dbContext.SaveChangesAsync();
 
         HttpContext.Response.Cookies.Delete("refreshToken", RefreshTokenCookieOptions);
 
