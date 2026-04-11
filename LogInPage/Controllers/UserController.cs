@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Security.Claims;
 using System.Text.Json;
 using Api.Model;
 using Api.Services;
@@ -25,9 +23,18 @@ public sealed class UserController(
     ApplicationDbContext dbContext,
     ITokenProvider tokenProvider,
     IOptions<JwtSettings> jwtSettings,
-    IOptions<RefreshTokenSettings> refreshTokenSettings)
+    IOptions<RefreshTokenSettings> refreshTokenSettings,
+    IWebHostEnvironment environment)
     : Controller
 {
+    private CookieOptions RefreshTokenCookieOptions => new()
+    {
+        HttpOnly = true,
+        SameSite = SameSiteMode.Lax,
+        Secure = !environment.IsDevelopment(),
+        Path = "/api"
+    };
+
     [HttpPost("register")]
     public async Task<ActionResult> RegisterUser([FromBody] RegistrationRequest request)
     {
@@ -84,7 +91,7 @@ public sealed class UserController(
         dbContext.RefreshTokens.Add(refreshToken);
         await dbContext.SaveChangesAsync();
         
-        HttpContext.Response.Headers.SetCookie = $"refreshToken={refreshToken.Token}; HttpOnly";
+        HttpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, RefreshTokenCookieOptions);
 
         return Ok(new LoginResponse(accessToken, DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes)));
     }
@@ -120,7 +127,7 @@ public sealed class UserController(
 
         await dbContext.SaveChangesAsync();
         
-        HttpContext.Response.Headers.SetCookie = $"refreshToken={newRefreshToken.Token}; HttpOnly";
+        HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken.Token, RefreshTokenCookieOptions);
 
         return Ok(new LoginResponse(accessToken, DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes)));
     }
@@ -149,7 +156,7 @@ public sealed class UserController(
         await refreshTokenQueryResult.ExecuteDeleteAsync();
         await dbContext.SaveChangesAsync();
 
-        HttpContext.Response.Headers.SetCookie = $"refreshToken=; HttpOnly; expires={DateTime.UtcNow}";
+        HttpContext.Response.Cookies.Delete("refreshToken", RefreshTokenCookieOptions);
 
         return Ok();
     }
