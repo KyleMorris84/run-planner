@@ -15,6 +15,7 @@ export const Route = createRootRoute({
       <TanStackDevtools
         config={{
           position: 'bottom-right',
+          openHotkey: ['Shift', 'Q'],
         }}
         plugins={[
           {
