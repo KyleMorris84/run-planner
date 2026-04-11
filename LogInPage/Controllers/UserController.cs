@@ -14,6 +14,7 @@ public record RegistrationRequest(string Email, string Password, string Name, bo
 public record RegisterResponse(string Id, string Email, string Name);
 public record LoginRequest(string Email, string Password);
 public record LoginResponse(string Token, DateTime exp, DateTime refreshTokenExp);
+public record UpdateUserRequest(string Name, string Email);
 
 [Route("api")]
 [ApiController]
@@ -149,6 +150,26 @@ public sealed class UserController(
     public ActionResult GetMe()
     {
         return Ok(User.Claims.ToDictionary(c => c.Type, c => c.Value));
+    }
+
+    [Authorize]
+    [HttpPatch("me")]
+    public async Task<ActionResult> UpdateMe([FromBody] UpdateUserRequest request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null) return NotFound();
+
+        user.Name = request.Name;
+        user.Email = request.Email;
+        user.UserName = request.Email;
+        user.NormalizedEmail = userManager.NormalizeEmail(request.Email);
+        user.NormalizedUserName = userManager.NormalizeName(request.Email);
+
+        var result = await userManager.UpdateAsync(user);
+        if (!result.Succeeded) return BadRequest(result.Errors);
+
+        return Ok(new RegisterResponse(user.Id, user.Email!, user.Name));
     }
     
     [Authorize]
