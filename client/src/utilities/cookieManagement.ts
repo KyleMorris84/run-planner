@@ -12,7 +12,11 @@ export const getCookie = <T>(cookieName: string): T | null => {
             c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
-            return JSON.parse(c.substring(name.length, c.length));
+            try {
+                return JSON.parse(c.substring(name.length, c.length));
+            } catch {
+                return null;
+            }
         }
     }
     return null;
