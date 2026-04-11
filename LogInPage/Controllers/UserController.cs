@@ -37,33 +37,40 @@ public sealed class UserController(
     [HttpPost("register")]
     public async Task<ActionResult> RegisterUser([FromBody] RegistrationRequest request)
     {
-        var transaction = await dbContext.Database.BeginTransactionAsync();
-        
-        var newUser = new ApplicationUser
-        {
-            Name = request.Name,
-            Email = request.Email,
-            UserName = request.Email,
-            NotificationsEnabled = request.NotificationsEnabled
-        };
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
-        var identityResult = await userManager.CreateAsync(newUser, request.Password);
-
-        if (!identityResult.Succeeded)
+        try
         {
-            return BadRequest(identityResult.Errors);
+            var newUser = new ApplicationUser
+            {
+                Name = request.Name,
+                Email = request.Email,
+                UserName = request.Email,
+                NotificationsEnabled = request.NotificationsEnabled
+            };
+
+            var identityResult = await userManager.CreateAsync(newUser, request.Password);
+            if (!identityResult.Succeeded)
+            {
+                await transaction.RollbackAsync();
+                return BadRequest(identityResult.Errors);
+            }
+
+            var addToRoleResult = await userManager.AddToRoleAsync(newUser, Roles.Member);
+            if (!addToRoleResult.Succeeded)
+            {
+                await transaction.RollbackAsync();
+                return BadRequest(addToRoleResult.Errors);
+            }
+
+            await transaction.CommitAsync();
+            return Ok(new RegisterResponse(newUser.Id, newUser.Email!, newUser.Name));
         }
-        
-        var addToRoleResult = await userManager.AddToRoleAsync(newUser, Roles.Member);
-        
-        if (!addToRoleResult.Succeeded)
+        catch
         {
-            return BadRequest(addToRoleResult.Errors);
+            await transaction.RollbackAsync();
+            throw;
         }
-        
-        await transaction.CommitAsync();
-
-        return Ok(new RegisterResponse(newUser.Id, newUser.Email!, newUser.Name));
     }
 
     [HttpPost("login")]
