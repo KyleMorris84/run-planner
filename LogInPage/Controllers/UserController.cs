@@ -115,8 +115,9 @@ public sealed class UserController(
             Expires = DateTime.UtcNow.AddDays(refreshTokenSettings.Value.ExpirationInDays)
         };
 
+        dbContext.RefreshTokens.Remove(dbRefreshToken);
         dbContext.RefreshTokens.Add(newRefreshToken);
-        
+
         await dbContext.SaveChangesAsync();
         
         HttpContext.Response.Headers.SetCookie = $"refreshToken={newRefreshToken.Token}; HttpOnly";
