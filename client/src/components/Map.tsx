@@ -1,7 +1,6 @@
 import { ChangeView, HandleMapEvents } from "@/utilities/mapUtils";
 import { MapContainer, TileLayer, Polyline, Marker as ReactLeafletMarker } from "react-leaflet";
 import type { Coordinate, Marker } from "@/types/Map";
-import { Box } from "@mui/material";
 // import L from "leaflet";
 
 export default function Map({ center, markers, setMarkers }: { center: Coordinate, markers: Marker[], setMarkers: any }) {
@@ -11,10 +10,10 @@ export default function Map({ center, markers, setMarkers }: { center: Coordinat
     };
 
     return (
-        <Box>
-            <Box sx={{ height: "50px", outline: "1px solid darkgray", margin: "1px" }}>TOP BAR (stats)</Box>
-            <Box display="flex">
-                <Box sx={{ height: "auto", width: "50px", outline: "1px solid darkgray", margin: "0px 1px 1px 1px" }}>SIDE<br />BAR<br />(tools)</Box>
+        <div className="h-full flex flex-col">
+            <div style={{ height: "50px", outline: "1px solid darkgray", margin: "1px" }}>TOP BAR (stats)</div>
+            <div className="flex flex-1 min-h-0">
+                <div style={{ width: "50px", outline: "1px solid darkgray", margin: "0px 1px 1px 1px" }}>SIDE<br />BAR<br />(tools)</div>
                 <MapContainer center={center} zoom={13} scrollWheelZoom={true} className="map">
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -49,7 +48,7 @@ export default function Map({ center, markers, setMarkers }: { center: Coordinat
                         />
                     )}
                 </MapContainer>
-            </Box>
-        </Box>
+            </div>
+        </div>
     )
 }

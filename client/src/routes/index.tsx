@@ -44,47 +44,27 @@ function Index() {
 
 
 
-  return (
-    <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 5, mt: 8 }}>
-      {!started && <>
-        <Typography variant="h4">
-          {user
-            ? "Welcome back, " + user?.name + "!"
-            : "Welcome guest!"
-          }
-        </Typography>
-        <Typography variant="body1" width="50%" textAlign="center">
-          Enter a post code and click "Start" to start plotting your route.
-          {!user && <><br /><br /> You are currently not logged in, your routes will not be saved. To save your routes, please log in or create an account.</>}
-        </Typography>
-      </>}
-      <Box sx={{ width: "100%", display: 'flex', justifyContent: 'center', gap: 2 }}>
-        <TextField variant="outlined" value={postCode} onChange={event => setPostCode(event.target.value)} />
-        <Button variant="contained" onClick={() => lookup(postCode)}>{started ? "Lookup" : "Start"}</Button>
-      </Box>
-      {started && <Map center={position} markers={markers} setMarkers={setMarkers} />}
-      {/* {
-        false && <LineChart
-          xAxis={[{ data: distances, label: "Distance (km)" }]}
-          yAxis={[{ label: "Elevation (m)" }]}
-          series={[{
-            data: markers.map(m => m.elevation),
-            showMark: true,
-          }]}
-          onHighlightedAxisChange={event => {
-            console.log(event);
-            setMarkers(prev => {
-              const newMarkers = prev.map((m, i) => ({
-                ...m,
-                highlight: i === event[0]?.dataIndex
-              }));
-              return newMarkers;
-            });
-          }}
-          height={500}
-          width={800} />
-      } */}
+  if (started) {
+    return (
+      <div className="h-full">
+        <Map center={position} markers={markers} setMarkers={setMarkers} />
+      </div>
+    )
+  }
 
-    </Box >
+  return (
+    <div className="flex flex-col items-center mt-16">
+      <Typography variant="h4">
+        {user ? `Welcome back, ${user.name}!` : "Welcome guest!"}
+      </Typography>
+      <Typography variant="body1" width="50%" textAlign="center" mt={5}>
+        Enter a post code and click "Start" to start plotting your route.
+        {!user && <><br /><br />You are currently not logged in — your routes will not be saved. Please log in or create an account to save them.</>}
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 2, mt: 5 }}>
+        <TextField variant="outlined" value={postCode} onChange={event => setPostCode(event.target.value)} />
+        <Button variant="contained" onClick={() => lookup(postCode)}>Start</Button>
+      </Box>
+    </div>
   )
 }

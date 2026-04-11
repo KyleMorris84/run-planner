@@ -17,6 +17,6 @@ code {
 }
 
 .map {
-  height: 650px;
-  width: 1400px;
+  flex: 1;
+  min-height: 0;
 }
