@@ -41,7 +41,7 @@ export default function UserIconButton() {
                     {user ?
                         [
                             <Link key="log-in" to="/account" onClick={handleClose}><MenuItem key="my-account">My Account</MenuItem></Link>,
-                            <MenuItem key="log-out" onClick={() => logOut(user.id)}>Log Out</MenuItem>
+                            <MenuItem key="log-out" onClick={() => logOut()}>Log Out</MenuItem>
                         ]
                         :
                         [

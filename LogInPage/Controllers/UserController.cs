@@ -17,7 +17,6 @@ public record RegistrationRequest(string Email, string Password, string Name, bo
 public record RegisterResponse(string Id, string Email, string Name);
 public record LoginRequest(string Email, string Password);
 public record LoginResponse(string Token, DateTime exp);
-public record LogoutRequest(string userId);
 
 [Route("api")]
 [ApiController]
@@ -132,24 +131,25 @@ public sealed class UserController(
         return Ok(User.Claims.ToDictionary(c => c.Type, c => c.Value));
     }
     
+    [Authorize]
     [HttpPost("logout")]
-    public async Task<ActionResult> Logout([FromBody] LogoutRequest request)
+    public async Task<ActionResult> Logout()
     {
-        // Revokes all refresh tokens for a given user
-        
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
+
         var refreshTokenQueryResult = dbContext.RefreshTokens
-            .Where(r => r.UserId == request.userId);
-        
+            .Where(r => r.UserId == userId);
+
         if (!refreshTokenQueryResult.Any())
         {
-            return Ok(JsonSerializer.Serialize(Empty));
+            return Ok();
         }
-        
+
         await refreshTokenQueryResult.ExecuteDeleteAsync();
         await dbContext.SaveChangesAsync();
-        
+
         HttpContext.Response.Headers.SetCookie = $"refreshToken=; HttpOnly; expires={DateTime.UtcNow}";
-        
-        return Ok(JsonSerializer.Serialize(Empty));
+
+        return Ok();
     }
 }

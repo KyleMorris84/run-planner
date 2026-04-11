@@ -1,6 +1,5 @@
 import type { AccessToken } from "@/types/Tokens"
-import { getCookie, setCookie } from "./cookieManagement";
-import { logOut } from "./logout";
+import { deleteCookie, getCookie, setCookie } from "./cookieManagement";
 import type { User } from "@/types/User";
 
 export async function apiFetch<T>(endpoint: string, options?: RequestInit, useAuthentication: boolean = true): Promise<T> {
@@ -42,10 +41,11 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit, useAu
 
     const refreshTokenExpiry = getCookie<string>('refreshTokenExpiry');
     if (refreshTokenExpiry && new Date(refreshTokenExpiry) < new Date()) {
-        const user = getCookie<User>('user');
-        if (!user) throw new Error('No user information found, unable to log out');
+        deleteCookie('user');
+        deleteCookie('accessToken');
+        deleteCookie('refreshTokenExpiry');
         alert('Your session has expired, you are about to be logged out :(');
-        logOut(user.id);
+        window.location.replace("/");
         throw new Error('Session has expired, please log in again');
     }
 

@@ -1,12 +1,15 @@
 import { apiFetch } from "./apiClient";
-import { deleteCookie, setCookie } from "./cookieManagement";
+import { deleteCookie } from "./cookieManagement";
 
-export const logOut = async (userId: string) => {
+export const logOut = async () => {
     try {
-        await apiFetch<null>('logout', { method: 'POST', body: JSON.stringify({ userId }) }, false);
+        await apiFetch<null>('logout', { method: 'POST' });
+    } catch (error) {
+        console.error('Server-side logout failed:', error);
+    } finally {
         deleteCookie('user');
         deleteCookie('accessToken');
         deleteCookie('refreshTokenExpiry');
         window.location.replace("/");
-    } catch (error) { }
+    }
 }
