@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api;
+namespace Api.Extensions;
 
 public static class WebApplicationExtensions
 {

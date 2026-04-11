@@ -1,4 +1,5 @@
 using Api;
+using Api.Extensions;
 using Api.Model;
 using Microsoft.EntityFrameworkCore;
 

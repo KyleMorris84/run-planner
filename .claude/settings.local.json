@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(cs|json\\)$\")",
+      "Bash(xargs grep:*)",
+      "Bash(cat /c/Users/kylem/Repos/run-planner/client/src/utilities/*)",
+      "Bash(xargs wc:*)"
+    ]
+  }
+}
