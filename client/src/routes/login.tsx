@@ -36,7 +36,7 @@ function RouteComponent() {
     });
 
     setCookie('accessToken', { token: response.token, exp: response.exp } as AccessToken);
-    setCookie('refreshTokenExpiry', new Date(Date.now() + 24 * 60 * 60 * 1000));
+    setCookie('refreshTokenExpiry', response.refreshTokenExp);
 
     var user = await apiFetch<UserResponse>('me', { headers: { Authorization: `Bearer ${response.token}` } });
     setCookie(

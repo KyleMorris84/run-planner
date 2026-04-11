@@ -13,7 +13,7 @@ namespace Api.Controllers;
 public record RegistrationRequest(string Email, string Password, string Name, bool NotificationsEnabled = true);
 public record RegisterResponse(string Id, string Email, string Name);
 public record LoginRequest(string Email, string Password);
-public record LoginResponse(string Token, DateTime exp);
+public record LoginResponse(string Token, DateTime exp, DateTime refreshTokenExp);
 
 [Route("api")]
 [ApiController]
@@ -99,7 +99,10 @@ public sealed class UserController(
         
         HttpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, RefreshTokenCookieOptions);
 
-        return Ok(new LoginResponse(accessToken, DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes)));
+        return Ok(new LoginResponse(
+            accessToken,
+            DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes),
+            refreshToken.Expires));
     }
 
     [HttpPost("refresh")]
@@ -135,7 +138,10 @@ public sealed class UserController(
         
         HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken.Token, RefreshTokenCookieOptions);
 
-        return Ok(new LoginResponse(accessToken, DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes)));
+        return Ok(new LoginResponse(
+            accessToken,
+            DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes),
+            newRefreshToken.Expires));
     }
 
     [Authorize]

@@ -64,7 +64,7 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit, useAu
         }
         var refreshResponseJson = await refreshResponse.json() as AccessToken;
         setCookie('accessToken', refreshResponseJson);
-        setCookie('refreshTokenExpiry', new Date(Date.now() + 24 * 60 * 60 * 1000));
+        setCookie('refreshTokenExpiry', refreshResponseJson.refreshTokenExp);
         headers.set('Authorization', `Bearer ${refreshResponseJson.token}`);
     }
     else {
