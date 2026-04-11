@@ -59,7 +59,7 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit, useAu
             })
         })
 
-        if (!(await refreshResponse.ok)) {
+        if (!refreshResponse.ok) {
             throw new Error('Failed to refresh access token');
         }
         var refreshResponseJson = await refreshResponse.json() as AccessToken;
