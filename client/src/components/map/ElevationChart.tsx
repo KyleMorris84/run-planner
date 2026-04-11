@@ -19,14 +19,12 @@ export default memo(function ElevationChart({ markers, distances, onHighlightCha
     };
 
     return (
-        <div className="flex justify-center">
+        <div style={{ width: "100%", height: 190 }}>
             <LineChart
                 xAxis={[{ data: distances, label: "Distance (km)", tickMinStep: 0.5 }]}
                 yAxis={[{}]}
                 series={[{ data: elevations, showMark: false, color: "#1976d2" }]}
                 onHighlightedAxisChange={handleAxisHighlight}
-                width={370}
-                height={190}
                 style={{ marginRight: 30 }}
             />
         </div>

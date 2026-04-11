@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography, useMediaQuery } from "@mui/material";
 import { memo } from "react";
 import ElevationChart from "./ElevationChart";
 import type { Marker } from "@/types/Map";
@@ -26,6 +26,7 @@ function formatTime(minutes: number): string {
 export default memo(function StatsPanel({
     open, markers, distances, pathLength, elevationGain, elevationLoss, onHighlightChange,
 }: StatsPanelProps) {
+    const isMobile = useMediaQuery("(max-width: 600px)");
     const hasRoute = markers.length >= 2;
 
     const highestPoint = hasRoute ? Math.max(...markers.map(m => m.elevation ?? 0)) : null;
@@ -33,24 +34,42 @@ export default memo(function StatsPanel({
     const estimatedTime = hasRoute ? formatTime(pathLength * PACE_MIN_PER_KM) : null;
     const netChange = elevationGain - elevationLoss;
 
+    const panelStyle: React.CSSProperties = isMobile
+        ? {
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "65vh",
+            background: "white",
+            borderTop: "1px solid #e0e0e0",
+            zIndex: 1000,
+            transform: open ? "translateY(0)" : "translateY(100%)",
+            transition: "transform 0.25s ease",
+            display: "flex",
+            flexDirection: "column",
+            overflowY: "auto",
+            overflowX: "hidden",
+        }
+        : {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: PANEL_WIDTH,
+            background: "white",
+            borderLeft: "1px solid #e0e0e0",
+            zIndex: 1000,
+            transform: open ? "translateX(0)" : "translateX(100%)",
+            transition: "transform 0.25s ease",
+            display: "flex",
+            flexDirection: "column",
+            overflowY: "auto",
+            overflowX: "hidden",
+        };
+
     return (
-        <div
-            style={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                bottom: 0,
-                width: PANEL_WIDTH,
-                background: "white",
-                borderLeft: "1px solid #e0e0e0",
-                zIndex: 1000,
-                transform: open ? "translateX(0)" : "translateX(100%)",
-                transition: "transform 0.25s ease",
-                display: "flex",
-                flexDirection: "column",
-                overflowY: "auto",
-            }}
-        >
+        <div style={panelStyle}>
             <div className="px-4 pt-4 pb-2">
                 <Typography variant="subtitle2" fontWeight={700}>Elevation Profile</Typography>
             </div>

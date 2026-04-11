@@ -157,7 +157,7 @@ export default function Map({ center, onSearch }: MapProps) {
     useEffect(() => { pushHistoryRef.current = pushHistory; }, [pushHistory]);
 
     return (
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col overflow-hidden">
             <TopBar
                 pathLength={pathLength}
                 elevationGain={elevationGain}
@@ -182,7 +182,7 @@ export default function Map({ center, onSearch }: MapProps) {
                 />
 
                 <div
-                    className="relative flex flex-col flex-1 min-h-0"
+                    className="relative flex flex-col flex-1 min-h-0 overflow-hidden"
                     onContextMenu={(e) => { e.preventDefault(); setContextMenu(null); }}
                 >
                     <FloatingSearch onSearch={onSearch} />
