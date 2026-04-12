@@ -61,7 +61,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center mt-16">
+    <div className="flex flex-col items-center justify-center mt-16 select-text">
       <Typography variant="h4">My Account</Typography>
 
       {!isEditing ? (

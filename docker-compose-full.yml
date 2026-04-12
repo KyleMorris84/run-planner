@@ -18,7 +18,7 @@ services:
       - Jwt__ClockSkew=15
       - RefreshToken__ExpirationInDays=1
       - RefreshToken__CleanUpFrequencyInMinutes=60
-      - Cors__AllowedOrigins__0=http://localhost:3000
+      - Cors__AllowedOrigins__0=https://localhost:3000
       - ASPNETCORE_URLS=http://+:7204
     depends_on:
       db:
@@ -43,7 +43,7 @@ services:
     ports:
       - '80:8080'
     volumes:
-      - ./elevation-data:/code/data
+      - ./open-elevation/data:/code/data
 volumes:
   db:
     driver: local
