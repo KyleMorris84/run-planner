@@ -21,8 +21,6 @@
 
 ## Other Improvements
 - ~~Add HTTPS to the front end using dev certs (get claude to explain)~~
-- Certain text should not be "highlight-able" and the text that is should not have those blue markers
-- Highlighting the text on any of the forms pages works weirdly. It kind of highlights the whole block when it should just do the one div.
-- Ability to edit route name in-line
+- ~~Ability to edit route name in-line~~
 - Get a better icon / name
-- Fix login page spacing on mobile - it should take up whole page
+- ~~Fix login page spacing on mobile - it should take up whole page~~

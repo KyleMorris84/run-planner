@@ -72,10 +72,10 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex flex-col items-center mt-16">
+    <div className="flex flex-col items-center mt-8 sm:mt-16 px-4 sm:px-0 w-full">
       <Typography variant="h4">Log In</Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-      <Paper className="flex flex-col items-center justify-center gap-8 p-10 mt-10 bg-gray-50 w-[500px]">
+      <form className="w-full sm:w-125" onSubmit={handleSubmit(onSubmit)}>
+      <Paper className="flex flex-col items-center justify-center gap-8 p-6 sm:p-10 mt-6 sm:mt-10 bg-gray-50">
         <TextField
           {...register('email')}
           error={!!errors.email}

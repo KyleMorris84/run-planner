@@ -61,11 +61,11 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center mt-16 select-text">
+    <div className="flex flex-col items-center justify-center mt-8 sm:mt-16 select-text px-4 sm:px-0 w-full">
       <Typography variant="h4">My Account</Typography>
 
       {!isEditing ? (
-        <Paper className="flex flex-col gap-4 p-10 mt-10 bg-gray-50 w-[500px]">
+        <Paper className="flex flex-col gap-4 p-6 sm:p-10 mt-6 sm:mt-10 bg-gray-50 w-full sm:w-125">
           <div className="flex flex-col gap-1">
             <Typography variant="caption" className="text-gray-500 uppercase tracking-wide">Name</Typography>
             <Typography variant="body1">{user?.name ?? '—'}</Typography>
@@ -90,8 +90,8 @@ function RouteComponent() {
           </Button>
         </Paper>
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Paper className="flex flex-col items-center gap-6 p-10 mt-10 bg-gray-50 w-[500px]">
+        <form className="w-full sm:w-125" onSubmit={handleSubmit(onSubmit)}>
+          <Paper className="flex flex-col items-center gap-6 p-6 sm:p-10 mt-6 sm:mt-10 bg-gray-50">
             <TextField
               {...register('name')}
               label="Name"

@@ -81,7 +81,7 @@ export default function Map({ center, onSearch }: MapProps) {
     }, [contextMenu]);
     const [clearDialogOpen, setClearDialogOpen] = useState(false);
     const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-    const [saveName, setSaveName] = useState("");
+    const [routeName, setRouteName] = useState("Untitled Route");
     const [saveDescription, setSaveDescription] = useState("");
 
     // --- Toolbar actions ---
@@ -98,7 +98,7 @@ export default function Map({ center, onSearch }: MapProps) {
         setClearDialogOpen(false);
     };
 
-    const handleExport = () => exportToGPX(markers, saveName || "Route");
+    const handleExport = () => exportToGPX(markers, routeName);
 
     // --- Marker add (called by HandleMapEvents) ---
     const handleMarkerAdd = useCallback((marker: Marker) => {
@@ -165,6 +165,8 @@ export default function Map({ center, onSearch }: MapProps) {
                 markers={markers}
                 elevationOpen={elevationOpen}
                 onToggleElevation={() => setElevationOpen(prev => !prev)}
+                routeName={routeName}
+                onNameChange={setRouteName}
             />
 
             <div className="flex flex-1 min-h-0">
@@ -261,8 +263,8 @@ export default function Map({ center, onSearch }: MapProps) {
                 <DialogContent className="flex flex-col gap-4 pt-2">
                     <TextField
                         label="Route name"
-                        value={saveName}
-                        onChange={e => setSaveName(e.target.value)}
+                        value={routeName}
+                        onChange={e => setRouteName(e.target.value)}
                         fullWidth
                         size="small"
                         sx={{ mt: 1 }}
